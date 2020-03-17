@@ -55,14 +55,15 @@ export function propertyOperation(statement) {
     lteq: '<=',
     gt: '>',
     gteq: '>=',
-    cont: 'LIKE'
+    cont: 'LIKE',
+    in: 'IN'
   }
   const pieces = statement.split('_')
   const operation = pieces.pop()
   const property = pieces.join('_')
   if (!operations.hasOwnProperty(operation)) {
     throw new Error(
-      'Operation not found, use (eq, neq, lt, lteq, gt, gteq, cont)'
+      'Operation not found, use (eq, neq, lt, lteq, gt, gteq, cont, in)'
     )
   }
   return `${property} ${operations[operation]}`
