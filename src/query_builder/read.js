@@ -71,7 +71,7 @@ export function propertyOperation(statement) {
 
 // Build where query
 export function queryWhere(options) {
-  const list = Object.keys(options).map(p => `${propertyOperation(p)} ?`)
+  const list = Object.entries(options).map(([p, val]) => `${propertyOperation(p)} ${Array.isArray(val) ? '('+val.map(() => '?').join(', ')+')' : '?'}`)
   return list.length > 0 ? `WHERE ${list.join(' AND ')}` : ''
 }
 
