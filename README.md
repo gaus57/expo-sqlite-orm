@@ -164,6 +164,10 @@ Animal.query(options)
 - gt: `>`,
 - gteq: `>=`,
 - cont: `LIKE`
+- in: `IN`
+- nin: `NOT IN`
+- null: `IS NULL`
+- notnull: `IS NOT NULL`
 
 ## Data types
 

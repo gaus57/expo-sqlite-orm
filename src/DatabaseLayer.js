@@ -89,7 +89,12 @@ export default class DatabaseLayer {
 
   query(options = {}) {
     const sql = QueryBuilder.query(this.tableName, options)
-    const params = Object.values(options.where || {}).reduce((agg, param) => (agg.concat(Array.isArray(param) ? param : [param])), [])
+    const params = Object.entries(options.where || {}).reduce((agg, [key, param]) => {
+      if (['null', 'notnull'].includes(key.split('_').pop())) {
+        return agg
+      }
+      return agg.concat(Array.isArray(param) ? param : [param])
+    }, [])
     return this.executeSql(sql, params).then(({ rows }) => rows)
   }
 }

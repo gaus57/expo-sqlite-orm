@@ -57,14 +57,16 @@ export function propertyOperation(statement) {
     gteq: '>=',
     cont: 'LIKE',
     in: 'IN',
-    nin: 'NOT IN'
+    nin: 'NOT IN',
+    null: 'IS NULL',
+    notnull: 'IS NOT NULL'
   }
   const pieces = statement.split('_')
   const operation = pieces.pop()
   const property = pieces.join('_')
   if (!operations.hasOwnProperty(operation)) {
     throw new Error(
-      'Operation not found, use (eq, neq, lt, lteq, gt, gteq, cont, in, nin)'
+      'Operation not found, use (eq, neq, lt, lteq, gt, gteq, cont, in, nin, null, notnull)'
     )
   }
   return `${property} ${operations[operation]}`
@@ -72,7 +74,12 @@ export function propertyOperation(statement) {
 
 // Build where query
 export function queryWhere(options) {
-  const list = Object.entries(options).map(([p, val]) => `${propertyOperation(p)} ${Array.isArray(val) ? '('+val.map(() => '?').join(', ')+')' : '?'}`)
+  const list = Object.entries(options).map(([p, val]) => {
+    if (['null', 'notnull'].includes(p.split('_').pop())) {
+      return propertyOperation(p)
+    }
+    return `${propertyOperation(p)} ${Array.isArray(val) ? '('+val.map(() => '?').join(', ')+')' : '?'}`
+  })
   return list.length > 0 ? `WHERE ${list.join(' AND ')}` : ''
 }
 
